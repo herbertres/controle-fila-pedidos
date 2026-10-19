@@ -53,4 +53,10 @@ public class PedidoController {
 
         return "redirect:/pedido/novo";
     }
+
+    @GetMapping("/pedido/lista")
+    public String listarPedidos(Model model) {
+        model.addAttribute("pedidos", pedidoService.listarTodos());
+        return "pedido/lista";
+    }
 }

@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Lista de pedidos', ~{::conteudo})}">
+
+<body>
+
+<section th:fragment="conteudo">
+
+    <!-- Cabeçalho da página -->
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+            <h2 class="h3 mb-1">Pedidos</h2>
+            <p class="text-secondary mb-0">
+                Consulte e gerencie os pedidos cadastrados.
+            </p>
+        </div>
+
+        <a th:href="@{/pedido/novo}" class="btn btn-primary">
+            + Novo pedido
+        </a>
+
+    </div>
+
+    <!-- Mensagem de sucesso -->
+    <div th:if="${mensagem != null}"
+         class="alert alert-success alert-dismissible fade show"
+         role="alert">
+
+        <span th:text="${mensagem}"></span>
+
+        <button type="button" class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Fechar"></button>
+    </div>
+
+    <!-- Tabela de pedidos -->
+    <div class="card shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="ps-3">Código</th>
+                            <th scope="col">Data de criação</th>
+                            <th scope="col">Plataforma</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <!-- Exibido quando não houver pedidos -->
+                        <tr th:if="${#lists.isEmpty(pedidos)}">
+                            <td colspan="5" class="text-center py-5">
+                                <p class="text-secondary mb-2">
+                                    Nenhum pedido encontrado.
+                                </p>
+
+                                <a th:href="@{/pedido/novo}"
+                                   class="btn btn-outline-primary btn-sm">
+                                    Cadastrar primeiro pedido
+                                </a>
+                            </td>
+                        </tr>
+
+                        <!-- Uma linha para cada pedido -->
+                        <tr th:each="pedido : ${pedidos}">
+
+                            <td class="ps-3 fw-semibold"
+                                th:text="${pedido.codigoPedido}">
+                            </td>
+
+                            <td class="text-nowrap"
+                                th:text="${pedido.dataCriacao != null
+                                    ? #temporals.format(pedido.dataCriacao, 'dd/MM/yyyy HH:mm')
+                                    : '-'}">
+                            </td>
+
+                            <td>
+                                <span th:text="${pedido.plataforma}">
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge rounded-pill"
+                                      th:classappend="${
+                                          pedido.status.name() == 'RECEBIDO'
+                                          ? ' text-bg-primary'
+                                          : pedido.status.name() == 'EM_PREPARACAO'
+                                          ? ' text-bg-warning'
+                                          : pedido.status.name() == 'PRONTO'
+                                          ? ' text-bg-success'
+                                          : pedido.status.name() == 'ENTREGUE'
+                                          ? ' text-bg-secondary'
+                                          : ' text-bg-danger'
+                                      }"
+                                      th:text="${pedido.status.name()
+                                          .replace('_', ' ')}">
+                                </span>
+                            </td>
+
+                            <!-- Ações do registro -->
+                            <td>
+                                <div class="d-flex justify-content-center
+                                            flex-wrap gap-1">
+
+                                    <!-- Ver detalhes -->
+                                    <a th:href="@{/pedido/detalhes/{id}(id=${pedido.id})}"
+                                       class="btn btn-outline-primary btn-sm"
+                                       title="Ver detalhes">
+                                        Ver
+                                    </a>
+
+                                    <!-- Alterar -->
+                                    <a th:href="@{/pedido/editar/{id}(id=${pedido.id})}"
+                                       class="btn btn-outline-secondary btn-sm"
+                                       title="Alterar pedido">
+                                        Editar
+                                    </a>
+
+                                    <!-- Excluir -->
+                                    <form th:action="@{/pedido/excluir/{id}(id=${pedido.id})}"
+                                          method="post"
+                                          onsubmit="return confirm('Tem certeza de que deseja excluir este pedido?');">
+
+                                        <button type="submit"
+                                                class="btn btn-outline-danger btn-sm"
+                                                title="Excluir pedido">
+                                            Excluir
+                                        </button>
+
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- Rodapé da tabela -->
+        <div class="card-footer bg-white text-secondary small"
+             th:unless="${#lists.isEmpty(pedidos)}">
+
+            Total de pedidos:
+            <strong th:text="${#lists.size(pedidos)}">0</strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+</body>
+</html>

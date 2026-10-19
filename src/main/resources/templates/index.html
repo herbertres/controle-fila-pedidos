@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Início', ~{::conteudo})}">
+
+<body>
+
+<section th:fragment="conteudo">
+
+    <div class="p-4 p-md-5 mb-4 bg-white rounded-3 shadow-sm">
+        <h2 class="display-6 fw-bold">Bem-vindo ao FilaPedidos</h2>
+
+        <p class="lead">
+            Gerencie seus pedidos em um só lugar.
+        </p>
+
+        <a th:href="@{/pedido/novo}" class="btn btn-primary btn-lg">
+            Cadastrar pedido
+        </a>
+    </div>
+
+</section>
+
+</body>
+</html>
