@@ -27,8 +27,10 @@ public class PedidoController {
     public String novoPedido(Model model) {
         Pedido novoPedido = new Pedido();
         novoPedido.setStatus(StatusPedido.RECEBIDO);
+        novoPedido.setPlataforma(PlataformaPedido.NINETY_NINE);
         model.addAttribute("pedido", novoPedido);
-        model.addAttribute("Plataformas", PlataformaPedido.values());
+        model.addAttribute("plataformas", PlataformaPedido.values());
+        model.addAttribute("statusDisp", StatusPedido.values());
         return "pedido/formulario";
     }
 

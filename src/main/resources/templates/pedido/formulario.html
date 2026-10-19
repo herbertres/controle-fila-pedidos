@@ -1,13 +1,16 @@
-<form th:action="@{/pedido/salvar}"
-      th:object="${pedido}"
-      method="post">
+<form th:action="@{/pedido/salvar}" th:object="${pedido}" method="post">
 
-    <label for="codigoPedido">Código do pedido</label>
+       <label for="codigoPedido">Código do pedido</label>
 
-    <input type="text"
-           id="codigoPedido"
-           th:field="*{codigoPedido}">
+       <input type="text" id="codigoPedido" th:field="*{codigoPedido}" />
+       
+       <select id="plataforma" th:field="*{plataforma}">
+              <option th:each="plataforma : ${plataformas}" th:value="${plataforma}" th:text="${plataforma}" />
+       </select>
+       <select id="status" th:field="*{status}">
+              <option th:each="statusPedido : ${statusDisp}" th:value="${statusPedido}" th:text="${statusPedido}" />
+       </select>
 
-    <button type="submit">Salvar pedido</button>
+       <button type="submit">Salvar pedido</button>
 
 </form>

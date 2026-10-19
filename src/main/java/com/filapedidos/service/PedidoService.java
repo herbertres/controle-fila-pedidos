@@ -1,8 +1,11 @@
 package com.filapedidos.service;
 
+import org.springframework.stereotype.Service;
+
 import com.filapedidos.model.Pedido;
 import com.filapedidos.repository.PedidoRepository;
 
+@Service 
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
 
