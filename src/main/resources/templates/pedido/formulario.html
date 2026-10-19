@@ -1,16 +1,27 @@
-<form th:action="@{/pedido/salvar}" th:object="${pedido}" method="post">
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout('Novo pedido', ~{::conteudo})}">
 
-       <label for="codigoPedido">Código do pedido</label>
+<body>
+       <section th:fragment="conteudo">
+              <form th:action="@{/pedido/salvar}" th:object="${pedido}" method="post">
 
-       <input type="text" id="codigoPedido" th:field="*{codigoPedido}" />
-       
-       <select id="plataforma" th:field="*{plataforma}">
-              <option th:each="plataforma : ${plataformas}" th:value="${plataforma}" th:text="${plataforma}" />
-       </select>
-       <select id="status" th:field="*{status}">
-              <option th:each="statusPedido : ${statusDisp}" th:value="${statusPedido}" th:text="${statusPedido}" />
-       </select>
+                     <label for="codigoPedido">Código do pedido</label>
 
-       <button type="submit">Salvar pedido</button>
+                     <input type="text" id="codigoPedido" th:field="*{codigoPedido}" />
 
-</form>
+                     <select id="plataforma" th:field="*{plataforma}">
+                            <option th:each="plataforma : ${plataformas}" th:value="${plataforma}"
+                                   th:text="${plataforma}" />
+                     </select>
+                     <select id="status" th:field="*{status}">
+                            <option th:each="statusPedido : ${statusDisp}" th:value="${statusPedido}"
+                                   th:text="${statusPedido}" />
+                     </select>
+
+                     <button type="submit" class="btn btn-primary">Salvar pedido</button>
+
+              </form>
+       </section>
+</body>
+
+</html>
