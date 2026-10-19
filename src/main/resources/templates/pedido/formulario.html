@@ -1,0 +1,13 @@
+<form th:action="@{/pedido/salvar}"
+      th:object="${pedido}"
+      method="post">
+
+    <label for="codigoPedido">Código do pedido</label>
+
+    <input type="text"
+           id="codigoPedido"
+           th:field="*{codigoPedido}">
+
+    <button type="submit">Salvar pedido</button>
+
+</form>
