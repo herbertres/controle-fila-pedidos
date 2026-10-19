@@ -1,0 +1,32 @@
+
+body {
+    min-height: 100vh;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+input,
+select,
+textarea,
+button {
+    max-width: 100%;
+}
+
+/* Ajustes para telas pequenas */
+@media (max-width: 576px) {
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    h1, h2 {
+        overflow-wrap: anywhere;
+    }
+}

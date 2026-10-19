@@ -3,24 +3,33 @@
 
 <body>
        <section th:fragment="conteudo">
-              <form th:action="@{/pedido/salvar}" th:object="${pedido}" method="post">
+              <div class="card-body p-4">
+                     <h1 class="h4 mb-4">Cadastrar pedido</h1>
+                     <form th:action="@{/pedido/salvar}" th:object="${pedido}" method="post">
 
-                     <label for="codigoPedido">Código do pedido</label>
+                            <div class="mb-3">
+                                   <label class="form-label" for="codigoPedido">Código do pedido:</label>
+                                   <input type="text" id="codigoPedido" th:field="*{codigoPedido}"
+                                          class="form-control" />
+                            </div>
+                            <div class="mb-3">
+                            <label class="form-label" for="plataforma">Plataforma:</label>
+                            <select id="plataforma" th:field="*{plataforma}">
+                                   <option th:each="plataforma : ${plataformas}" th:value="${plataforma}"
+                                          th:text="${plataforma}" />
+                            </select>
+                            </div>
+                            <div class="mb-3">
+                            <label class="form-label" for="status">Status:</label>
+                            <select id="status" th:field="*{status}">
+                                   <option th:each="statusPedido : ${statusDisp}" th:value="${statusPedido}"
+                                          th:text="${statusPedido}" />
+                            </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar pedido</button>
 
-                     <input type="text" id="codigoPedido" th:field="*{codigoPedido}" />
-
-                     <select id="plataforma" th:field="*{plataforma}">
-                            <option th:each="plataforma : ${plataformas}" th:value="${plataforma}"
-                                   th:text="${plataforma}" />
-                     </select>
-                     <select id="status" th:field="*{status}">
-                            <option th:each="statusPedido : ${statusDisp}" th:value="${statusPedido}"
-                                   th:text="${statusPedido}" />
-                     </select>
-
-                     <button type="submit" class="btn btn-primary">Salvar pedido</button>
-
-              </form>
+                     </form>
+              </div>
        </section>
 </body>
 
