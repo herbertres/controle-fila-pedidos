@@ -31,6 +31,9 @@ public class Pedido {
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
+    @Column(name = "data_ultima_alteracao", nullable = false, updatable = true)
+    private LocalDateTime dataUltimaAlteracao;
+
     @NotNull(message = "O status é obrigatório")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
@@ -59,8 +62,12 @@ public class Pedido {
             dataCriacao = LocalDateTime.now();
         }
 
+        if (dataUltimaAlteracao == null) {
+            dataUltimaAlteracao = LocalDateTime.now();
+        }
+
         if (status == null) {
-            status = StatusPedido.RECEBIDO;
+            status = StatusPedido.EM_PREPARO;
         }
     }
 
@@ -94,5 +101,13 @@ public class Pedido {
 
     public void setPlataforma(PlataformaPedido plataforma) {
         this.plataforma = plataforma;
+    }
+
+    public LocalDateTime getDataUltimaAlteracao() {
+        return dataUltimaAlteracao;
+    }
+
+    public void setDataUltimaAlteracao(LocalDateTime dataUltimaAlteracao) {
+        this.dataUltimaAlteracao = dataUltimaAlteracao;
     }
 }

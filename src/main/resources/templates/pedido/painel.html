@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>FilaPedidos | Painel de Retirada</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/painelExt.css}" />
+</head>
+
+<body>
+
+<div class="painel">
+
+    <!-- Cabeçalho -->
+    <header class="cabecalho">
+        <div>
+            <div class="marca">FilaPedidos</div>
+            <div class="subtitulo">Painel de acompanhamento e retirada</div>
+        </div>
+
+        <div class="text-end">
+            <div class="subtitulo">ACOMPANHAMENTO DE PEDIDOS</div>
+            <div class="fw-bold fs-5">RETIRADA</div>
+        </div>
+    </header>
+
+    <!-- Quadro principal -->
+    <main class="quadro">
+
+        <!-- Coluna: em preparo -->
+        <section class="coluna">
+
+            <div class="coluna-titulo titulo-preparo">
+                EM PREPARO
+                <span class="badge text-bg-dark ms-2"
+                      th:text="${#lists.size(pedidosEmPreparo)}">0</span>
+            </div>
+
+            <div class="lista-pedidos">
+
+                <div class="pedido"
+                     th:each="pedido : ${pedidosEmPreparo}">
+
+                    <div class="pedido-codigo"
+                         th:text="${pedido.codigoPedido}">
+                    </div>
+
+                    <div class="pedido-plataforma"
+                         th:text="${pedido.plataforma}">
+                    </div>
+
+                </div>
+
+                <div class="vazio"
+                     th:if="${#lists.isEmpty(pedidosEmPreparo)}">
+                    Nenhum pedido em preparo
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Coluna: pronto para retirada -->
+        <section class="coluna">
+
+            <div class="coluna-titulo titulo-pronto">
+                PRONTO PARA RETIRADA
+                <span class="badge text-bg-dark ms-2"
+                      th:text="${#lists.size(pedidosProntos)}">0</span>
+            </div>
+
+            <div class="lista-pedidos">
+
+                <div class="pedido"
+                     th:each="pedido : ${pedidosProntos}">
+
+                    <div class="pedido-codigo"
+                         th:text="${pedido.codigoPedido}">
+                    </div>
+
+                    <div class="pedido-plataforma"
+                         th:text="${pedido.plataforma}">
+                    </div>
+
+                </div>
+
+                <div class="vazio"
+                     th:if="${#lists.isEmpty(pedidosProntos)}">
+                    Nenhum pedido aguardando retirada
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Notificações para motoboys internos -->
+    <section class="internos">
+
+        <div class="internos-titulo">
+            <span aria-hidden="true">!</span>
+            RETIRADA — MOTOBOYS INTERNOS
+        </div>
+
+        <div class="internos-lista">
+
+            <div class="interno-pedido"
+                 th:each="pedido : ${ultimosInternosProntos}">
+
+                <div class="interno-codigo"
+                     th:text="${pedido.codigoPedido}">
+                </div>
+
+                <div class="interno-legenda">
+                    PEDIDO PRONTO
+                </div>
+
+            </div>
+
+            <div class="internos-vazio"
+                 th:if="${#lists.isEmpty(ultimosInternosProntos)}">
+                Nenhum pedido interno pronto no momento.
+            </div>
+
+        </div>
+    </section>
+
+</div>
+<script>
+    setInterval(function() {
+        window.location.reload();
+    }, 3000);
+</script>
+</body>
+</html>

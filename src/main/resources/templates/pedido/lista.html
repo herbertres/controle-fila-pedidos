@@ -35,6 +35,31 @@
                 data-bs-dismiss="alert"
                 aria-label="Fechar"></button>
     </div>
+    <!-- Filtro por código do pedido -->
+    <div class="row mb-3">
+        <div class="col-12 col-md-6 col-lg-4">
+            <label for="filtroCodigo" class="form-label">
+                Filtrar por código
+            </label>
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                </span>
+
+                <input type="search" id="filtroCodigo" class="form-control" placeholder="Digite o código do pedido..."
+                    autocomplete="off">
+
+                <button type="button" id="limparFiltro" class="btn btn-outline-secondary">
+                    Limpar
+                </button>
+            </div>
+
+            <small class="text-secondary">
+                A busca encontra códigos completos ou parciais.
+            </small>
+        </div>
+    </div>
 
     <!-- Tabela de pedidos -->
     <div class="card shadow-sm">
@@ -72,10 +97,11 @@
                         </tr>
 
                         <!-- Uma linha para cada pedido -->
-                        <tr th:each="pedido : ${pedidos}">
+                        <tr th:each="pedido : ${pedidos}" class="linha-pedido">
 
                             <td class="ps-3 fw-semibold"
-                                th:text="${pedido.codigoPedido}">
+                                th:text="${pedido.codigoPedido}"
+                                th:attr="data-codigo=${pedido.codigoPedido}">
                             </td>
 
                             <td class="text-nowrap"
@@ -92,9 +118,7 @@
                             <td>
                                 <span class="badge rounded-pill"
                                       th:classappend="${
-                                          pedido.status.name() == 'RECEBIDO'
-                                          ? ' text-bg-primary'
-                                          : pedido.status.name() == 'EM_PREPARACAO'
+                                          pedido.status.name() == 'EM_PREPARO'
                                           ? ' text-bg-warning'
                                           : pedido.status.name() == 'PRONTO'
                                           ? ' text-bg-success'
@@ -163,7 +187,51 @@
 
     </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const campoFiltro = document.getElementById('filtroCodigo');
+    const botaoLimpar = document.getElementById('limparFiltro');
+    const linhas = document.querySelectorAll('.linha-pedido');
+    const contador = document.getElementById('totalPedidosVisiveis');
+
+    function filtrarPedidos() {
+        const termo = campoFiltro.value.trim().toLowerCase();
+        let quantidadeVisivel = 0;
+
+        linhas.forEach(function (linha) {
+            const celulaCodigo = linha.querySelector('[data-codigo]');
+            const codigo = celulaCodigo?.dataset.codigo?.toLowerCase() || '';
+
+            const corresponde = codigo.includes(termo);
+
+            linha.hidden = !corresponde;
+
+            if (corresponde) {
+                quantidadeVisivel++;
+            }
+        });
+
+        if (contador) {
+            contador.textContent = quantidadeVisivel;
+        }
+    }
+
+    campoFiltro.addEventListener('input', filtrarPedidos);
+
+    botaoLimpar.addEventListener('click', function () {
+        campoFiltro.value = '';
+        filtrarPedidos();
+        campoFiltro.focus();
+    });
+
+    filtrarPedidos();
+});
+</script>
+
 </section>
+
+
+
 
 </body>
 </html>

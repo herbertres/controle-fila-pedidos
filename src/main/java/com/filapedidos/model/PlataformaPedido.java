@@ -7,5 +7,6 @@ public enum PlataformaPedido {
     IFOOD,
     NINETY_NINE,
     UBER_EATS,
-    OUTRA
+    OUTRA,
+    INTERNO
 }

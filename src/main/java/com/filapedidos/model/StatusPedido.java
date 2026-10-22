@@ -4,9 +4,7 @@ package com.filapedidos.model;
  * StatusPedido
  */
 public enum StatusPedido {
-    RECEBIDO,
-    EM_PREPARACAO,
+    EM_PREPARO,
     PRONTO,
-    ENTREGUE,
-    CANCELADO
+    ENTREGUE
 }
