@@ -16,7 +16,7 @@
                             <label class="form-label" for="plataforma">Plataforma:</label>
                             <select id="plataforma" th:field="*{plataforma}">
                                    <option th:each="plataforma : ${plataformas}" th:value="${plataforma}"
-                                          th:text="${plataforma}" />
+                                          th:text="${plataforma.descricao}" />
                             </select>
                             </div>
                             <div class="mb-3">
