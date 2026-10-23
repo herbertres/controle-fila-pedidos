@@ -26,10 +26,29 @@
                                           th:text="${statusPedido}" />
                             </select>
                             </div>
-                            <button type="submit" class="btn btn-primary">Salvar pedido</button>
+                            <button type="submit" class="btn btn-primary" id="btnSalvar" disabled>Salvar pedido</button>
 
                      </form>
               </div>
+
+              <script>
+                     
+                     document.addEventListener("DOMContentLoaded", function () {
+                     const campoCodigo = document.getElementById("codigoPedido");
+                     const botaoSalvar = document.getElementById("btnSalvar");
+
+                     function atualizarBotao() {
+                            botaoSalvar.disabled = campoCodigo.value.trim() === "";
+                     }
+
+                     campoCodigo.addEventListener("input", atualizarBotao);
+
+                     // Verifica também se o formulário abriu com algum valor preenchido.
+                     atualizarBotao();
+                     });
+
+              </script>
+              
        </section>
 </body>
 

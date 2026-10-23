@@ -19,6 +19,28 @@ button {
     max-width: 100%;
 }
 
+
+.filtro-card {
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+.filtro-status-card {
+    border-left: 4px solid #0d6efd;
+}
+
+.filtro-card .card-body {
+    padding: 1.25rem;
+}
+
+.filtro-card .form-label,
+.filtro-card .fw-bold {
+    color: #343a40;
+}
+
+
+
 /* Ajustes para telas pequenas */
 @media (max-width: 576px) {
     .container {

@@ -35,31 +35,86 @@
                 data-bs-dismiss="alert"
                 aria-label="Fechar"></button>
     </div>
-    <!-- Filtro por código do pedido -->
-    <div class="row mb-3">
-        <div class="col-12 col-md-6 col-lg-4">
-            <label for="filtroCodigo" class="form-label">
-                Filtrar por código
-            </label>
 
-            <div class="input-group">
-                <span class="input-group-text">
-                    <i class="bi bi-search"></i>
-                </span>
+    <!-- FILTROS -->
 
-                <input type="search" id="filtroCodigo" class="form-control" placeholder="Digite o código do pedido..."
-                    autocomplete="off">
+<div class="row g-3 mb-4">
 
-                <button type="button" id="limparFiltro" class="btn btn-outline-secondary">
-                    Limpar
-                </button>
+    <!-- Filtro por código -->
+    <div class="col-12 col-lg-4">
+        <div class="card h-100 filtro-card">
+            <div class="card-body">
+                <label for="filtroCodigo" class="form-label fw-bold">
+                    <i class="bi bi-search"></i> Buscar por código
+                </label>
+
+                <input type="text"
+                       id="filtroCodigo"
+                       class="form-control"
+                       placeholder="Digite o código do pedido...">
+
+                <div class="form-text">
+                    Pesquise pelo código do pedido.
+                </div>
             </div>
-
-            <small class="text-secondary">
-                A busca encontra códigos completos ou parciais.
-            </small>
         </div>
     </div>
+
+    <!-- Filtro por status -->
+    <div class="col-12 col-lg-8">
+        <div class="card h-100 filtro-card filtro-status-card">
+            <div class="card-body">
+                <div class="fw-bold mb-3">
+                    <i class="bi bi-funnel"></i> Status
+                </div>
+
+                <div class="d-flex flex-wrap gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input filtro-status"
+                               type="checkbox"
+                               id="statusEmPreparo"
+                               value="EM_PREPARO"
+                               checked>
+                        <label class="form-check-label"
+                               for="statusEmPreparo">
+                            Em preparo
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input filtro-status"
+                               type="checkbox"
+                               id="statusPronto"
+                               value="PRONTO"
+                               checked>
+                        <label class="form-check-label"
+                               for="statusPronto">
+                            Pronto
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input filtro-status"
+                               type="checkbox"
+                               id="statusEntregue"
+                               value="ENTREGUE"
+                               checked>
+                        <label class="form-check-label"
+                               for="statusEntregue">
+                            Entregue
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-text mt-3">
+                    Marque os status que deseja visualizar.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 
     <!-- Tabela de pedidos -->
     <div class="card shadow-sm">
@@ -97,11 +152,11 @@
                         </tr>
 
                         <!-- Uma linha para cada pedido -->
-                        <tr th:each="pedido : ${pedidos}" class="linha-pedido">
+                        <tr th:each="pedido : ${pedidos}" class="linha-pedido" 
+                            th:attr="data-status=${pedido.status.name()},data-codigo=${pedido.codigoPedido}">
 
                             <td class="ps-3 fw-semibold"
-                                th:text="${pedido.codigoPedido}"
-                                th:attr="data-codigo=${pedido.codigoPedido}">
+                                th:text="${pedido.codigoPedido}">
                             </td>
 
                             <td class="text-nowrap"
@@ -180,44 +235,42 @@
     </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const campoFiltro = document.getElementById('filtroCodigo');
-    const botaoLimpar = document.getElementById('limparFiltro');
-    const linhas = document.querySelectorAll('.linha-pedido');
-    const contador = document.getElementById('totalPedidosVisiveis');
 
-    function filtrarPedidos() {
-        const termo = campoFiltro.value.trim().toLowerCase();
-        let quantidadeVisivel = 0;
+const filtroCodigo = document.getElementById("filtroCodigo");
+const filtrosStatus = document.querySelectorAll(".filtro-status");
+const linhasPedidos = document.querySelectorAll(".linha-pedido");
 
-        linhas.forEach(function (linha) {
-            const celulaCodigo = linha.querySelector('[data-codigo]');
-            const codigo = celulaCodigo?.dataset.codigo?.toLowerCase() || '';
+function aplicarFiltros() {
+    const codigo = filtroCodigo.value.trim().toLowerCase();
 
-            const corresponde = codigo.includes(termo);
+    const statusSelecionados = Array.from(filtrosStatus)
+        .filter(filtro => filtro.checked)
+        .map(filtro => filtro.value);
 
-            linha.hidden = !corresponde;
+    linhasPedidos.forEach(linha => {
+        const codigoPedido = (
+            linha.dataset.codigo || ""
+        ).toLowerCase();
 
-            if (corresponde) {
-                quantidadeVisivel++;
-            }
-        });
+        const statusPedido = linha.dataset.status;
 
-        if (contador) {
-            contador.textContent = quantidadeVisivel;
-        }
-    }
+        const correspondeCodigo = codigoPedido.includes(codigo);
 
-    campoFiltro.addEventListener('input', filtrarPedidos);
+        const correspondeStatus =
+            statusSelecionados.includes(statusPedido);
 
-    botaoLimpar.addEventListener('click', function () {
-        campoFiltro.value = '';
-        filtrarPedidos();
-        campoFiltro.focus();
+        linha.hidden = !(
+            correspondeCodigo && correspondeStatus
+        );
     });
+}
 
-    filtrarPedidos();
+filtroCodigo.addEventListener("input", aplicarFiltros);
+
+filtrosStatus.forEach(filtro => {
+    filtro.addEventListener("change", aplicarFiltros);
 });
+
 </script>
 
 </section>
