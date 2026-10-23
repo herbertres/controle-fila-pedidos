@@ -6,5 +6,5 @@ package com.filapedidos.model;
 public enum StatusPedido {
     EM_PREPARO,
     PRONTO,
-    ENTREGUE
+    RETIRADO
 }

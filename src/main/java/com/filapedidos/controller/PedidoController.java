@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -15,6 +16,8 @@ import com.filapedidos.model.StatusPedido;
 import com.filapedidos.service.PedidoService;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @Controller
 public class PedidoController {
@@ -64,13 +67,25 @@ public class PedidoController {
 
     @GetMapping("/pedido/painel")
     public String exibirPainel(Model model) {
-        List<Pedido> pedidosEmPreparo = pedidoService.listarEmPreparoPlataformas(12);
-        List<Pedido> pedidosProntos = pedidoService.listarProntosPlataformas(12);
+        List<Pedido> pedidosEmPreparo = pedidoService.listarEmPreparoPlataformas(15);
+        List<Pedido> pedidosProntos = pedidoService.listarProntosPlataformas(15);
         List<Pedido> ultimosInternosProntos = pedidoService.listarInternosProntos(1);
 
         model.addAttribute("pedidosEmPreparo", pedidosEmPreparo);
         model.addAttribute("pedidosProntos", pedidosProntos);
         model.addAttribute("ultimosInternosProntos", ultimosInternosProntos);
         return "pedido/painel";
+    }
+
+    @PostMapping("/pedido/{id}/pronto")
+    public String marcarPronto(@PathVariable Long id) {
+        pedidoService.marcarComoPronto(id);
+        return "redirect:/pedido/lista";
+    }
+
+    @PostMapping("/pedido/{id}/retirado")
+    public String marcarRetirado(@PathVariable Long id) {
+        pedidoService.marcarComoRetirado(id);
+        return "redirect:/pedido/lista";
     }
 }

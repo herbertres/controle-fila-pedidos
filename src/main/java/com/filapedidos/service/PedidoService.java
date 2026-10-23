@@ -1,7 +1,9 @@
 package com.filapedidos.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,5 +41,24 @@ public class PedidoService {
 
     public @Nullable List<Pedido> listarInternosProntos(int quantidade) {
         return pedidoRepository.findByStatusAndPlataformaOrderByDataUltimaAlteracaoDesc(StatusPedido.PRONTO, PlataformaPedido.INTERNO, PageRequest.of(0,quantidade));
+    }
+
+    public void marcarComoPronto(Long id){
+        Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
+        if (pedido.getStatus().equals(StatusPedido.EM_PREPARO)) {
+            pedido.setStatus(StatusPedido.PRONTO);
+            pedido.setDataUltimaAlteracao(LocalDateTime.now());
+            pedidoRepository.save(pedido);
+        }
+    }
+
+    public void marcarComoRetirado(Long id) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
+        if (pedido.getStatus().equals(StatusPedido.PRONTO)) {
+            pedido.setStatus(StatusPedido.RETIRADO);
+            pedido.setDataUltimaAlteracao(LocalDateTime.now());
+            pedidoRepository.save(pedido);
+        }
     }
 }

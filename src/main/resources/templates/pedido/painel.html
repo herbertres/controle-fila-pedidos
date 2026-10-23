@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="pedido-plataforma"
-                         th:text="${pedido.plataforma}">
+                         th:text="${pedido.plataforma.descricao}">
                     </div>
 
                 </div>
@@ -68,7 +68,7 @@
         <section class="coluna">
 
             <div class="coluna-titulo titulo-pronto">
-                PRONTO PARA RETIRADA
+                PRONTOS
                 <span class="badge text-bg-dark ms-2"
                       th:text="${#lists.size(pedidosProntos)}">0</span>
             </div>
@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="pedido-plataforma"
-                         th:text="${pedido.plataforma}">
+                         th:text="${pedido.plataforma.descricao}">
                     </div>
 
                 </div>
@@ -102,7 +102,7 @@
     <section class="internos">
 
         <div class="internos-titulo">
-            <span aria-hidden="true">!</span>
+            <!--<span aria-hidden="true">!</span> -->
             RETIRADA — MOTOBOYS INTERNOS
         </div>
 
