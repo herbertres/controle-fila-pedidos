@@ -22,18 +22,32 @@
             + Novo pedido
         </a>
 
-    </div>
 
-    <!-- Mensagem de sucesso -->
-    <div th:if="${mensagem != null}"
-         class="alert alert-success alert-dismissible fade show"
-         role="alert">
 
-        <span th:text="${mensagem}"></span>
+        <div class="mb-3">
+            <!-- Notificação desligada -->
+            <form th:if="${!notificacaoMotoboyAtiva}"
+                th:action="@{/pedido/notificacao-motoboy/iniciar}"
+                method="post">
 
-        <button type="button" class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Fechar"></button>
+                <button type="submit" class="btn btn-warning">
+                    <span aria-hidden="true">🔔</span>
+                    Chamar motoboy
+                </button>
+            </form>
+
+            <!-- Notificação ligada -->
+            <form th:if="${notificacaoMotoboyAtiva}"
+                th:action="@{/pedido/notificacao-motoboy/parar}"
+                method="post">
+
+                <button type="submit" class="btn btn-outline-danger">
+                    <span aria-hidden="true">🚫</span>
+                    Parar notificação motoboy
+                </button>
+            </form>
+        </div>
+
     </div>
 
     <!-- FILTROS -->
@@ -127,9 +141,9 @@
 
                     <thead class="table-light">
                         <tr>
-                            <th scope="col" class="ps-3">Código</th>
-                            <th scope="col">Data de criação</th>
-                            <th scope="col">Plataforma</th>
+                            <th scope="col" class="ps-3">Pedido</th>
+                            <th scope="col">HR</th>
+                            <th scope="col">Plat.</th>
                             <th scope="col">Status</th>
                             <th scope="col" class="text-center">Ações</th>
                         </tr>
@@ -161,7 +175,7 @@
 
                             <td class="text-nowrap"
                                 th:text="${pedido.dataCriacao != null
-                                    ? #temporals.format(pedido.dataCriacao, 'dd/MM/yyyy HH:mm')
+                                    ? #temporals.format(pedido.dataCriacao, 'HH:mm')
                                     : '-'}">
                             </td>
 

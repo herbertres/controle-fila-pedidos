@@ -1,9 +1,10 @@
 package com.filapedidos.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,7 +15,7 @@ import com.filapedidos.model.PlataformaPedido;
 import com.filapedidos.model.StatusPedido;
 import com.filapedidos.repository.PedidoRepository;
 
-@Service 
+@Service
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
 
@@ -26,25 +27,36 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
+    public boolean existeCodigoHoje(String codigoPedido) {
+        LocalDate hoje = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
+
+        LocalDateTime inicio = hoje.atStartOfDay();
+        LocalDateTime fim = hoje.plusDays(1).atStartOfDay();
+
+        return pedidoRepository
+                .existsByCodigoPedidoAndDataCriacaoGreaterThanEqualAndDataCriacaoLessThan(
+                        codigoPedido,
+                        inicio,
+                        fim);
+    }
+
     public @Nullable List<Pedido> listarTodos() {
-        List<Pedido> listaPedidos = pedidoRepository.findAll(Sort.by(Sort.Direction.ASC, Pedido::getDataCriacao));
+        List<Pedido> listaPedidos = pedidoRepository
+                .findAll(Sort.by(Sort.Direction.DESC, Pedido::getDataCriacao));
         return listaPedidos;
     }
 
     public @Nullable List<Pedido> listarEmPreparoPlataformas(int quantidade) {
-        return pedidoRepository.findByStatusAndPlataformaNotOrderByDataUltimaAlteracaoAsc(StatusPedido.EM_PREPARO, PlataformaPedido.INTERNO, PageRequest.of(0,quantidade));
+        return pedidoRepository.findByStatusOrderByDataUltimaAlteracaoAsc(StatusPedido.EM_PREPARO, PageRequest.of(0, quantidade));
     }
 
     public @Nullable List<Pedido> listarProntosPlataformas(int quantidade) {
-        return pedidoRepository.findByStatusAndPlataformaNotOrderByDataUltimaAlteracaoAsc(StatusPedido.PRONTO, PlataformaPedido.INTERNO, PageRequest.of(0,quantidade));
+        return pedidoRepository.findByStatusOrderByDataUltimaAlteracaoAsc(StatusPedido.PRONTO, PageRequest.of(0, quantidade));
     }
 
-    public @Nullable List<Pedido> listarInternosProntos(int quantidade) {
-        return pedidoRepository.findByStatusAndPlataformaOrderByDataUltimaAlteracaoDesc(StatusPedido.PRONTO, PlataformaPedido.INTERNO, PageRequest.of(0,quantidade));
-    }
-
-    public void marcarComoPronto(Long id){
-        Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
+    public void marcarComoPronto(Long id) {
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado: " + id));
         if (pedido.getStatus().equals(StatusPedido.EM_PREPARO)) {
             pedido.setStatus(StatusPedido.PRONTO);
             pedido.setDataUltimaAlteracao(LocalDateTime.now());

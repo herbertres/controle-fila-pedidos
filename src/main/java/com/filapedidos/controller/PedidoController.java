@@ -13,18 +13,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.filapedidos.model.Pedido;
 import com.filapedidos.model.PlataformaPedido;
 import com.filapedidos.model.StatusPedido;
+import com.filapedidos.service.NotificacaoMotoboyService;
 import com.filapedidos.service.PedidoService;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PutMapping;
-
 
 @Controller
 public class PedidoController {
+    
     private final PedidoService pedidoService;
+    private final NotificacaoMotoboyService notificacaoMotoboyService;
 
-    public PedidoController(PedidoService pedidoService) {
+    public PedidoController(PedidoService pedidoService, NotificacaoMotoboyService notificacaoMotoboyService) {
         this.pedidoService = pedidoService;
+        this.notificacaoMotoboyService = notificacaoMotoboyService;
     }
 
     // Exibe o formulário de cadastro
@@ -50,30 +52,37 @@ public class PedidoController {
             return "pedido/formulario";
         }
 
-        pedidoService.salvar(pedido);
+        if (!pedidoService.existeCodigoHoje(pedido.getCodigoPedido())) {
+            pedidoService.salvar(pedido);
 
-        redirectAttributes.addFlashAttribute(
-                "mensagem",
-                "Pedido cadastrado com sucesso!");
+            redirectAttributes.addFlashAttribute(
+                    "mensagem",
+                    "Pedido " + pedido.getCodigoPedido() + " cadastrado com sucesso!");
 
-        return "redirect:/pedido/novo";
+            return "redirect:/pedido/novo";
+        } else {
+            redirectAttributes.addFlashAttribute(
+                    "mensagem",
+                    "Pedido " + pedido.getCodigoPedido() + " já cadastrado.");
+            return "redirect:/pedido/novo";
+        }
     }
 
     @GetMapping("/pedido/lista")
     public String listarPedidos(Model model) {
         model.addAttribute("pedidos", pedidoService.listarTodos());
+        model.addAttribute("notificacaoMotoboyAtiva", notificacaoMotoboyService.isNotificacaoAtiva());
         return "pedido/lista";
     }
 
     @GetMapping("/pedido/painel")
     public String exibirPainel(Model model) {
-        List<Pedido> pedidosEmPreparo = pedidoService.listarEmPreparoPlataformas(15);
-        List<Pedido> pedidosProntos = pedidoService.listarProntosPlataformas(15);
-        List<Pedido> ultimosInternosProntos = pedidoService.listarInternosProntos(1);
+        List<Pedido> pedidosEmPreparo = pedidoService.listarEmPreparoPlataformas(18);
+        List<Pedido> pedidosProntos = pedidoService.listarProntosPlataformas(18);
 
         model.addAttribute("pedidosEmPreparo", pedidosEmPreparo);
         model.addAttribute("pedidosProntos", pedidosProntos);
-        model.addAttribute("ultimosInternosProntos", ultimosInternosProntos);
+        model.addAttribute("notificacaoMotoboyAtiva", notificacaoMotoboyService.isNotificacaoAtiva());
         return "pedido/painel";
     }
 
@@ -88,4 +97,17 @@ public class PedidoController {
         pedidoService.marcarComoRetirado(id);
         return "redirect:/pedido/lista";
     }
+
+    @PostMapping("/pedido/notificacao-motoboy/iniciar")
+    public String iniciarNotificacaoMotoboy() {
+        notificacaoMotoboyService.iniciarNotificacao();
+        return "redirect:/pedido/lista";
+    }
+
+    @PostMapping("/pedido/notificacao-motoboy/parar")
+    public String pararNotificacaoMotoboy() {
+        notificacaoMotoboyService.pararNotificacao();
+        return "redirect:/pedido/lista";
+    }
+
 }

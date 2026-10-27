@@ -123,65 +123,6 @@ body {
     font-size: clamp(1rem, 1.5vw, 1.4rem);
 }
 
-.internos {
-    background: #321d2a;
-    border: 2px solid var(--cor-interna);
-    border-radius: 1rem;
-    padding: 1rem 1.25rem;
-}
-
-.internos-titulo {
-    color: var(--cor-interna);
-    font-size: clamp(1.2rem, 2vw, 2rem);
-    font-weight: 900;
-    margin-bottom: .75rem;
-}
-
-.internos-lista {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: .75rem;
-}
-
-.interno-pedido {
-    background: #51263a;
-    border: 1px solid #a63e61;
-    border-radius: .65rem;
-    padding: .8rem;
-    text-align: center;
-    animation: chamar-atencao 1.2s ease-in-out infinite;
-}
-
-.interno-codigo {
-    font-size: clamp(1.2rem, 2vw, 2rem);
-    font-weight: 900;
-    overflow-wrap: anywhere;
-}
-
-.interno-legenda {
-    font-size: clamp(.8rem, 1.2vw, 1.1rem);
-    color: #fecdd3;
-}
-
-.internos-vazio {
-    color: #fecdd3;
-    font-size: 1.1rem;
-}
-
-@keyframes chamar-atencao {
-
-    0%,
-    100% {
-        opacity: 1;
-        box-shadow: 0 0 0 rgba(251, 113, 133, 0);
-    }
-
-    50% {
-        opacity: .45;
-        box-shadow: 0 0 18px rgba(251, 113, 133, .45);
-    }
-}
-
 @media (max-width: 700px) {
     .painel {
         padding: .75rem;
@@ -197,18 +138,64 @@ body {
         padding: .6rem;
     }
 
-    .internos-lista {
-        grid-template-columns: 1fr;
-    }
-
     .cabecalho {
         align-items: flex-start;
         flex-direction: column;
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .interno-pedido {
-        animation: none;
+/* Notificação de chamada do motoboy interno */
+.notificacao-motoboy {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #dc3545;
+    color: white;
+
+    text-align: center;
+    z-index: 9999;
+
+    animation: piscar-motoboy 1s infinite;
+}
+
+.notificacao-conteudo {
+    width: 100%;
+    padding: 30px;
+}
+
+.icone-motoboy {
+    font-size: clamp(5rem, 15vw, 12rem);
+    margin-bottom: 20px;
+}
+
+.notificacao-motoboy h1 {
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    margin-bottom: 30px;
+}
+
+.mensagem-motoboy {
+    font-size: clamp(3rem, 11vw, 9rem);
+    font-weight: 900;
+    line-height: 1.1;
+    overflow-wrap: break-word;
+    text-transform: uppercase;
+}
+
+@keyframes piscar-motoboy {
+    0%, 100% {
+        background-color: #dc3545;
+        color: #ffffff;
+    }
+
+    50% {
+        background-color: #ffffff;
+        color: #dc3545;
     }
 }

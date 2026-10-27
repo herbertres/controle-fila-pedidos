@@ -67,6 +67,19 @@
 
     <!-- Conteúdo específico de cada página -->
     <main class="container py-4">
+
+        <!-- Mensagem de sucesso -->
+        <div th:if="${mensagem != null}"
+            class="alert alert-success alert-dismissible fade show"
+            role="alert">
+
+            <span th:text="${mensagem}"></span>
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Fechar"></button>
+        </div>
+
         <div th:replace="${conteudo}"></div>
     </main>
 

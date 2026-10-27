@@ -17,6 +17,7 @@
 <div class="painel">
 
     <!-- Cabeçalho -->
+     <!--
     <header class="cabecalho">
         <div>
             <div class="marca">FilaPedidos</div>
@@ -28,9 +29,9 @@
             <div class="fw-bold fs-5">RETIRADA</div>
         </div>
     </header>
-
+-->
     <!-- Quadro principal -->
-    <main class="quadro">
+    <main class="quadro" th:if="${notificacaoMotoboyAtiva == false}">
 
         <!-- Coluna: em preparo -->
         <section class="coluna">
@@ -99,33 +100,20 @@
     </main>
 
     <!-- Notificações para motoboys internos -->
-    <section class="internos">
-
-        <div class="internos-titulo">
-            <!--<span aria-hidden="true">!</span> -->
-            RETIRADA — MOTOBOYS INTERNOS
-        </div>
-
-        <div class="internos-lista">
-
-            <div class="interno-pedido"
-                 th:each="pedido : ${ultimosInternosProntos}">
-
-                <div class="interno-codigo"
-                     th:text="${pedido.codigoPedido}">
+    <section class="internos" th:if="${notificacaoMotoboyAtiva}">
+    
+        <div th:if="${notificacaoMotoboyAtiva}" class="notificacao-motoboy">
+    
+            <div class="notificacao-conteudo">
+                <div class="icone-motoboy">🔔</div>
+    
+                <h1>ATENÇÃO!</h1>
+    
+                <div class="mensagem-motoboy">
+                    MOTOBOY INTERNO
                 </div>
-
-                <div class="interno-legenda">
-                    PEDIDO PRONTO
-                </div>
-
             </div>
-
-            <div class="internos-vazio"
-                 th:if="${#lists.isEmpty(ultimosInternosProntos)}">
-                Nenhum pedido interno pronto no momento.
-            </div>
-
+    
         </div>
     </section>
 
@@ -135,5 +123,51 @@
         window.location.reload();
     }, 3000);
 </script>
+
+<script th:if="${notificacaoMotoboyAtiva}">
+    const audioContext = new (
+        window.AudioContext || window.webkitAudioContext
+    )();
+
+    function tocarNota(frequencia, inicio, duracao) {
+        const oscilador = audioContext.createOscillator();
+        const volume = audioContext.createGain();
+
+        oscilador.type = "sine";
+        oscilador.frequency.value = frequencia;
+
+        volume.gain.setValueAtTime(0.001, inicio);
+        volume.gain.exponentialRampToValueAtTime(
+            0.18, inicio + 0.04
+        );
+        volume.gain.exponentialRampToValueAtTime(
+            0.001, inicio + duracao
+        );
+
+        oscilador.connect(volume);
+        volume.connect(audioContext.destination);
+
+        oscilador.start(inicio);
+        oscilador.stop(inicio + duracao);
+    }
+
+    function tocarCampainha() {
+        const agora = audioContext.currentTime;
+
+        tocarNota(880, agora, 0.45);
+        tocarNota(660, agora + 0.35, 0.65);
+    }
+
+    audioContext.resume().then(() => {
+        tocarCampainha();
+
+        setInterval(() => {
+            if (audioContext.state === "running") {
+                tocarCampainha();
+            }
+        }, 2500);
+    });
+</script>
+
 </body>
 </html>
