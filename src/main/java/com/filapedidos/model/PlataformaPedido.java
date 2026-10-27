@@ -5,10 +5,7 @@ package com.filapedidos.model;
  */
 public enum PlataformaPedido {
     IFOOD("IFOOD"),
-    NINETY_NINE("99"),
-    UBER_EATS("UBER EATS"),
-    OUTRA("OUTRA"),
-    INTERNO("INTERNO");
+    NINETY_NINE("99");
 
     private PlataformaPedido(String descricao){
         this.descricao = descricao;

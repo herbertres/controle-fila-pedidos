@@ -38,6 +38,7 @@ public class PedidoController {
         model.addAttribute("pedido", novoPedido);
         model.addAttribute("plataformas", PlataformaPedido.values());
         model.addAttribute("statusDisp", StatusPedido.values());
+        model.addAttribute("titulo", "Novo pedido");
         return "pedido/formulario";
     }
 
@@ -72,6 +73,7 @@ public class PedidoController {
     public String listarPedidos(Model model) {
         model.addAttribute("pedidos", pedidoService.listarTodos());
         model.addAttribute("notificacaoMotoboyAtiva", notificacaoMotoboyService.isNotificacaoAtiva());
+        model.addAttribute("titulo", "Lista de pedidos");
         return "pedido/lista";
     }
 
@@ -83,6 +85,7 @@ public class PedidoController {
         model.addAttribute("pedidosEmPreparo", pedidosEmPreparo);
         model.addAttribute("pedidosProntos", pedidosProntos);
         model.addAttribute("notificacaoMotoboyAtiva", notificacaoMotoboyService.isNotificacaoAtiva());
+        model.addAttribute("titulo", "Painel");
         return "pedido/painel";
     }
 

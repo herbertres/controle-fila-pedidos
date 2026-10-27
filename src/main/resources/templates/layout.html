@@ -21,10 +21,17 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold"
+            
+            <a class="navbar-brand fw-bold d-flex align-items-center"
             th:href="@{/pedido/lista}">
-                FilaPedidos
+
+                <img th:src="@{/img/tito.png}"
+                    alt="Logo FilaPedidos"
+                    style="height: 40px; width: auto; margin-right: 10px;">
+
+                <span>FilaPedidos</span>
             </a>
+
 
             <button class="navbar-toggler"
                     type="button"
