@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.filapedidos.model.Pedido;
@@ -67,6 +68,73 @@ public class PedidoController {
                     "Pedido " + pedido.getCodigoPedido() + " já cadastrado.");
             return "redirect:/pedido/novo";
         }
+    }
+
+    // Exibe a tela de busca/edição de pedido
+    @GetMapping("/pedido/editar")
+    public String telaEditarPedido(Model model) {
+        model.addAttribute("plataformas", PlataformaPedido.values());
+        model.addAttribute("statusDisp", StatusPedido.values());
+        model.addAttribute("titulo", "Editar pedido");
+        return "pedido/editar";
+    }
+
+    // Busca um pedido do dia pelo código informado
+    @PostMapping("/pedido/editar/buscar")
+    public String buscarPedidoParaEditar(
+            @RequestParam("codigoPedidoBusca") String codigoPedido,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        String codigo = codigoPedido == null ? "" : codigoPedido.trim();
+        model.addAttribute("codigoPedidoBusca", codigo);
+        model.addAttribute("plataformas", PlataformaPedido.values());
+        model.addAttribute("statusDisp", StatusPedido.values());
+        model.addAttribute("titulo", "Editar pedido");
+
+        if (codigo.isEmpty()) {
+            model.addAttribute("erroBusca", "Informe o código do pedido.");
+            return "pedido/editar";
+        }
+
+        return pedidoService.buscarPedidoHojePorCodigo(codigo)
+                .map(pedido -> {
+                    model.addAttribute("pedido", pedido);
+                    return "pedido/editar";
+                })
+                .orElseGet(() -> {
+                    model.addAttribute("erroBusca",
+                            "Nenhum pedido de hoje foi encontrado com o código " + codigo + ".");
+                    return "pedido/editar";
+                });
+    }
+
+    // Atualiza somente status e plataforma; código e data de criação são preservados
+    @PostMapping("/pedido/editar/salvar")
+    public String salvarEdicaoPedido(
+            @RequestParam("id") Long id,
+            @RequestParam("status") StatusPedido status,
+            @RequestParam("plataforma") PlataformaPedido plataforma,
+            RedirectAttributes redirectAttributes) {
+
+        Pedido pedido = pedidoService.buscarPorId(id);
+        if (pedido == null) {
+            redirectAttributes.addFlashAttribute("mensagem",
+                    "Pedido não encontrado. Faça a busca novamente.");
+            return "redirect:/pedido/editar";
+        }
+
+        // Impede a edição de um pedido de outro dia.
+        if (!pedidoService.ehPedidoDeHoje(pedido)) {
+            redirectAttributes.addFlashAttribute("mensagem",
+                    "Somente pedidos do dia atual podem ser editados.");
+            return "redirect:/pedido/editar";
+        }
+
+        pedidoService.atualizarPedido(pedido, status, plataforma);
+        redirectAttributes.addFlashAttribute("mensagem",
+                "Pedido " + pedido.getCodigoPedido() + " atualizado com sucesso!");
+        return "redirect:/pedido/lista";
     }
 
     @GetMapping("/pedido/lista")

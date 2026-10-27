@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,38 @@ public class PedidoService {
 
     public Pedido salvar(Pedido pedido) {
         return pedidoRepository.save(pedido);
+    }
+
+    public Optional<Pedido> buscarPedidoHojePorCodigo(String codigoPedido) {
+        LocalDate hoje = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime inicio = hoje.atStartOfDay();
+        LocalDateTime fim = hoje.plusDays(1).atStartOfDay();
+
+        return pedidoRepository
+                .findByCodigoPedidoAndDataCriacaoGreaterThanEqualAndDataCriacaoLessThan(
+                        codigoPedido, inicio, fim);
+    }
+
+    public Pedido buscarPorId(Long id) {
+        return pedidoRepository.findById(id).orElse(null);
+    }
+
+    public boolean ehPedidoDeHoje(Pedido pedido) {
+        LocalDate hoje = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime inicio = hoje.atStartOfDay();
+        LocalDateTime fim = hoje.plusDays(1).atStartOfDay();
+        return pedido.getDataCriacao() != null
+                && !pedido.getDataCriacao().isBefore(inicio)
+                && pedido.getDataCriacao().isBefore(fim);
+    }
+
+    public Pedido atualizarPedido(Pedido pedidoExistente, StatusPedido status,
+            PlataformaPedido plataforma) {
+        pedidoExistente.setStatus(status);
+        pedidoExistente.setPlataforma(plataforma);
+        pedidoExistente.setDataUltimaAlteracao(
+                LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
+        return pedidoRepository.save(pedidoExistente);
     }
 
     public boolean existeCodigoHoje(String codigoPedido) {

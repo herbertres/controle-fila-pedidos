@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Editar pedido', ~{::conteudo})}">
+<body>
+<section th:fragment="conteudo">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="h4 mb-4">Editar pedido</h1>
+
+            <form th:action="@{/pedido/editar/buscar}" method="post" class="mb-4">
+                <div class="mb-3">
+                    <label class="form-label" for="codigoPedidoBusca">Código do pedido:</label>
+                    <div class="input-group">
+                        <input type="text" id="codigoPedidoBusca" name="codigoPedidoBusca"
+                               maxlength="10" required autofocus
+                               th:value="${codigoPedidoBusca}">
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                    <div class="form-text">A busca considera os pedidos do dia atual.</div>
+                </div>
+            </form>
+
+            <div th:if="${erroBusca != null}" class="alert alert-warning" role="alert"
+                 th:text="${erroBusca}"></div>
+
+            <form th:if="${pedido != null}" th:action="@{/pedido/editar/salvar}" method="post"
+                  class="border-top pt-4">
+                <input type="hidden" name="id" th:value="${pedido.id}">
+
+                <div class="mb-3">
+                    <label class="form-label" for="codigoExibicao">Código do pedido:</label>
+                    <input type="text" id="codigoExibicao"
+                           th:value="${pedido.codigoPedido}" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="plataforma">Plataforma:</label>
+                    <select id="plataforma" name="plataforma" required>
+                        <option th:each="plataformaOpcao : ${plataformas}"
+                                th:value="${plataformaOpcao}"
+                                th:text="${plataformaOpcao.descricao}"
+                                th:selected="${plataformaOpcao == pedido.plataforma}"></option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="status">Status:</label>
+                    <select id="status" name="status" required>
+                        <option th:each="statusOpcao : ${statusDisp}"
+                                th:value="${statusOpcao}"
+                                th:text="${statusOpcao}"
+                                th:selected="${statusOpcao == pedido.status}"></option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                <a th:href="@{/pedido/lista}" class="btn btn-outline-secondary ms-2">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

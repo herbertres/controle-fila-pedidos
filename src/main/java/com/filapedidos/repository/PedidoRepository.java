@@ -21,6 +21,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
         List<Pedido> findByStatusAndPlataformaOrderByDataUltimaAlteracaoDesc(
                         StatusPedido status, PlataformaPedido plataforma, Pageable page);
 
+        java.util.Optional<Pedido> findByCodigoPedidoAndDataCriacaoGreaterThanEqualAndDataCriacaoLessThan(
+                        String codigoPedido, LocalDateTime inicio, LocalDateTime fim);
+
         boolean existsByCodigoPedidoAndDataCriacaoGreaterThanEqualAndDataCriacaoLessThan(
                         String codigoPedido,
                         LocalDateTime inicio,
